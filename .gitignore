@@ -1,6 +1,7 @@
 /dataset
 /tests
 /pai
+/tmp
 *.zip
 
 # Byte-compiled / optimized / DLL files
