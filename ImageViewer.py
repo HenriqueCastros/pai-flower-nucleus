@@ -2,7 +2,9 @@ import cv2
 import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
+
 from utils import scale_proportional
+from segmentations import binary_segmentation, otsu_segmentation
 
 class ImageViewerApp:
     def __init__(self, root):
@@ -24,6 +26,7 @@ class ImageViewerApp:
         if file_path:
             image = cv2.imread(file_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image = otsu_segmentation(image)
             shape = image.shape
             shape = (shape[1], shape[0])
 
@@ -32,8 +35,3 @@ class ImageViewerApp:
 
             self.photo = ImageTk.PhotoImage(image)
             self.image_label.config(image=self.photo)
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = ImageViewerApp(root)
-    root.mainloop()
