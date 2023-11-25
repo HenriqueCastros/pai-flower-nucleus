@@ -1,4 +1,4 @@
-import description
-import ImageViewer
-import segmentations
-import utils
+from .description import *
+from .ImageViewer import *
+from .segmentations import *
+from .utils import *
