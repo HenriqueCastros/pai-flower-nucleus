@@ -1,5 +1,5 @@
 import tkinter as tk
-from ImageViewer import ImageViewerApp
+from src import ImageViewerApp
 
 root = tk.Tk()
 app = ImageViewerApp(root)
