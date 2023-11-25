@@ -1,10 +1,8 @@
-import cv2
 import tkinter as tk
+from tkinter import ttk
 from tkinter import filedialog
-from PIL import Image, ImageTk
 
-from .utils import scale_proportional
-from .segmentations import binary, otsu, watershed
+from .Zoom import Zoom_Advanced
 
 class ImageViewerApp:
     def __init__(self, root):
@@ -22,20 +20,20 @@ class ImageViewerApp:
         self.root.grid_columnconfigure(2, weight=1)
         self.root.grid_columnconfigure(3, weight=1)
 
-        self.image_label = tk.Label(root)
+        self.image_label = ttk.Frame(root)
         self.image_label.grid(row=0, column=0, columnspan=4)
 
         open_btn = tk.Button(root, text="Open Image", command=self.open_image)
-        open_btn.grid(row=1, column=0, pady=5)
+        open_btn.grid(row=2, column=0, pady=5)
 
         open_dialog_btn = tk.Button(root, text="Set parameters", command=self.open_dialog)
-        open_dialog_btn.grid(row=1, column=1, pady=5)
+        open_dialog_btn.grid(row=2, column=1, pady=5)
 
         segmentation_drop = tk.OptionMenu(root, self.segmentation_mode, "binary", "otsu", "watershed")
-        segmentation_drop.grid(row=1, column=2, pady=5)
+        segmentation_drop.grid(row=2, column=2, pady=5)
 
         gimme_data_btn = tk.Button(root, text="Get descriptors", command=lambda: print(self.centroid, self.N))
-        gimme_data_btn.grid(row=1, column=3, pady=5)
+        gimme_data_btn.grid(row=2, column=3, pady=5)
 
         self.photo = None
 
@@ -43,16 +41,8 @@ class ImageViewerApp:
         file_path = filedialog.askopenfilename(filetypes=[("Image files", ".png .jpg")])
 
         if file_path:
-            image = cv2.imread(file_path)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            shape = image.shape
-            shape = (shape[1], shape[0])
-
-            image = Image.fromarray(image)
-            image = image.resize(scale_proportional(shape, (800,400)))
-
-            self.photo = ImageTk.PhotoImage(image)
-            self.image_label.config(image=self.photo)
+            self.image_label = Zoom_Advanced(self.root, file_path)
+            self.image_label.grid(row=0, column=0, columnspan=4)
     
     def open_dialog(self):
         dialog = tk.Tk()
