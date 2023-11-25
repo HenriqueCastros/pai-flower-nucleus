@@ -1,7 +1,7 @@
 # Code avalibale in https://stackoverflow.com/a/48137257
 # Thanks for the help! We've adapted for our porpouse
 
-import cv2
+import numpy as np
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
@@ -26,7 +26,7 @@ class AutoScrollbar(ttk.Scrollbar):
     
 class Zoom_Advanced(ttk.Frame):
     ''' Advanced zoom of the image '''
-    def __init__(self, mainframe, path, vbar_col=5, hbar_row=1, colspan=4):
+    def __init__(self, mainframe, img: str | np.ndarray, vbar_col=5, hbar_row=1, colspan=4):
         ''' Initialize the main Frame '''
         ttk.Frame.__init__(self, master=mainframe)
 
@@ -53,13 +53,16 @@ class Zoom_Advanced(ttk.Frame):
         self.canvas.bind('<B1-Motion>',     self.move_to)
         self.canvas.bind('<MouseWheel>', self.wheel)  # with Windows and MacOS, but not Linux
 
-        self.image = cv2.imread(path)
-        self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
-        shape = self.image.shape
-        shape = (shape[1], shape[0])
 
-        self.image = Image.fromarray(self.image)
-        self.image = self.image.resize(scale_proportional(shape, (800,400)))
+        if isinstance(img, str):
+            self.image = Image.open(img)
+            self.shape = self.image.size
+            self.image = self.image.resize(scale_proportional(self.image.size, (800,400)))
+        elif isinstance(img, np.ndarray):
+            self.image = Image.fromarray(img)
+            self.shape = self.image.size
+        else:
+            raise "Non compatible type for image"
 
 
         self.width, self.height = self.image.size
