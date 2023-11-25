@@ -24,6 +24,9 @@ def calculate_perimeter(image):
     Returns:
         number: the perimeter
     """
+    if not isinstance(image, np.ndarray):
+        image = np.array(image)
+
     contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return cv2.arcLength(contours[0], True)
 
@@ -36,6 +39,8 @@ def calculate_centroid(image):
     Returns:
         tuple: the centroid
     """
+    if not isinstance(image, np.ndarray):
+        image = np.array(image)
     M = cv2.moments(image)
     
     cX = int(M["m10"] / M["m00"])
