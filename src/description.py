@@ -58,3 +58,15 @@ def calculate_compactness(image):
         number: compactness
     """
     return (calculate_perimeter(image) ** 2) / (4 * np.pi * calculate_area(image))
+
+def calculate_eccentricity(image):
+    if not isinstance(image, np.ndarray):
+        image = np.array(image)
+
+    contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contour = max(contours, key=cv2.contourArea)
+    ellipse = cv2.fitEllipse(contour)
+    major_axis = max(ellipse[1])
+    minor_axis = min(ellipse[1])
+    eccentricity = np.sqrt(1 - (minor_axis * 2) / (major_axis * 2))
+    return eccentricity
