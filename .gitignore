@@ -3,6 +3,7 @@
 /pai
 /tmp
 *.zip
+/cropped_dataset
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
