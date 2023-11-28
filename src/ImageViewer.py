@@ -9,13 +9,17 @@ from .Zoom import Zoom_Advanced
 from .utils import crop_image_around_point, getOriginFromCropped
 from .segmentations import *
 from .description import *
+from .classify import *
 
 class ImageViewerApp:
-    def __init__(self, root):
+    def __init__(self, root, N=10):
         self.centroid = (0, 0)
-        self.N = 100
+        self.N = N
         self.segmentation_mode = tk.StringVar(root)
         self.segmentation_mode.set("binary")
+
+        self.classification_mode = tk.StringVar(root)
+        self.classification_mode.set("Mahalanobis")
 
         self.root = root
         self.root.title("Image Viewer")
@@ -25,6 +29,7 @@ class ImageViewerApp:
         self.root.grid_columnconfigure(1, weight=1)
         self.root.grid_columnconfigure(2, weight=1)
         self.root.grid_columnconfigure(3, weight=1)
+        self.root.grid_columnconfigure(4, weight=1)
 
         self.image_label = ttk.Frame(root)
         self.image_label.grid(row=0, column=0, columnspan=4)
@@ -40,6 +45,9 @@ class ImageViewerApp:
 
         gimme_data_btn = tk.Button(root, text="Get descriptors", command=self.descriptor_dialog)
         gimme_data_btn.grid(row=2, column=3, pady=5)
+
+        gimme_data_btn = tk.Button(root, text="Classify", command=self.classify_dialog)
+        gimme_data_btn.grid(row=2, column=4, pady=5)
 
         self.photo = None
 
@@ -83,7 +91,7 @@ class ImageViewerApp:
         dialog = tk.Toplevel()
 
         tk.Label(dialog, text="Segmentation mode:").grid(row=0, column=0, padx=5, pady=5)
-        segmentation_drop = tk.OptionMenu(dialog, self.segmentation_mode, "binary", "otsu", "watershed")
+        segmentation_drop = tk.OptionMenu(dialog, self.segmentation_mode, "binary", "otsu", "watershed", "region growing")
         segmentation_drop.grid(row=0, column=1, padx=5, pady=5)
         segmentation_drop.config(width=10)
 
@@ -97,6 +105,8 @@ class ImageViewerApp:
                 img = otsu(img, invert=True)
             elif self.segmentation_mode.get() == "watershed":
                 img = watershed(img)
+            elif self.segmentation_mode.get() == "region growing":
+                img = region_growing(img)
 
             self.image_label = Zoom_Advanced(self.root, img)
             self.image_label.grid(row=0, column=0, columnspan=4)
@@ -115,22 +125,58 @@ class ImageViewerApp:
         origin = getOriginFromCropped(self.centroid[0], self.centroid[1], self.N)
         norm_centroid = ((self.centroid[0] - origin[0]), self.centroid[1] - origin[1])
         tk.Label(dialog, text="Distance from original centroid:").grid(row=1, column=0, padx=5, pady=5)
-        tk.Label(dialog, text=math.dist(new_centroid, norm_centroid)).grid(row=1, column=1, padx=5, pady=5)
+        tk.Label(dialog, text="{:.2f}".format(math.dist(new_centroid, norm_centroid))).grid(row=1, column=1, padx=5, pady=5)
 
         tk.Label(dialog, text="Area:").grid(row=2, column=0, padx=5, pady=5)
-        tk.Label(dialog, text=calculate_area(self.image_label.image)).grid(row=2, column=1, padx=5, pady=5)
+        tk.Label(dialog, text="{:.2f}".format(calculate_area(self.image_label.image))).grid(row=2, column=1, padx=5, pady=5)
 
         tk.Label(dialog, text="Perimeter:").grid(row=3, column=0, padx=5, pady=5)
-        tk.Label(dialog, text=calculate_perimeter(self.image_label.image)).grid(row=3, column=1, padx=5, pady=5)
+        tk.Label(dialog, text="{:.2f}".format(calculate_perimeter(self.image_label.image))).grid(row=3, column=1, padx=5, pady=5)
 
         tk.Label(dialog, text="Compactnes:").grid(row=4, column=0, padx=5, pady=5)
-        tk.Label(dialog, text=calculate_compactness(self.image_label.image)).grid(row=4, column=1, padx=5, pady=5)
+        tk.Label(dialog, text="{:.2f}".format(calculate_compactness(self.image_label.image))).grid(row=4, column=1, padx=5, pady=5)
         
         tk.Label(dialog, text="N:").grid(row=5, column=0, padx=5, pady=5)
-        tk.Label(dialog, text=self.N).grid(row=5, column=1, padx=5, pady=5)
+        tk.Label(dialog, text="{:.2f}".format(self.N)).grid(row=5, column=1, padx=5, pady=5)
 
         def close():
             dialog.destroy()
 
         action_btn = tk.Button(dialog, text="Close", command=close)
         action_btn.grid(row=6, column=0, columnspan=2, pady=10)
+    
+    def classify_dialog(self):
+        dialog = tk.Toplevel()
+        
+        tk.Label(dialog, text="Classifier:").grid(row=0, column=0, padx=5, pady=5)
+        segmentation_drop = tk.OptionMenu(dialog, self.classification_mode, "Mahalanobis", "Neural Network")
+        segmentation_drop.grid(row=0, column=1, padx=5, pady=5)
+        segmentation_drop.config(width=10)
+
+        labels = []
+        descriptors = []
+
+        for i in range(6):
+            labels.append(tk.Label(dialog, text="ASC-H:"))
+            labels[-1].grid(row=i+1, column=0, padx=5, pady=5)
+            descriptors.append(tk.Label(dialog, text="{:.2f}".format(0)))
+            descriptors[-1].grid(row=i+1, column=1, padx=5, pady=5)
+    
+        def close():
+            dialog.destroy()
+
+        def classify():
+            data = classify_mahalanobis(self.image_label.image)[0]
+
+            for i, key in enumerate(data):
+                label = list(dict(key).keys())[0]
+                descriptor = '{:.2f}'.format(list(dict(key).values())[0])
+                labels[i].config(text=label)
+                descriptors[i].config(text=descriptor)
+
+
+        action_btn = tk.Button(dialog, text="Close", command=close)
+        action_btn.grid(row=7, column=0, columnspan=1, pady=10)
+
+        action_btn = tk.Button(dialog, text="Classify", command=classify)
+        action_btn.grid(row=7, column=1, columnspan=1, pady=10)
