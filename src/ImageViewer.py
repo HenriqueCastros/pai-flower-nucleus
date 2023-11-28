@@ -30,6 +30,7 @@ class ImageViewerApp:
         self.root.grid_columnconfigure(2, weight=1)
         self.root.grid_columnconfigure(3, weight=1)
         self.root.grid_columnconfigure(4, weight=1)
+        self.root.grid_columnconfigure(5, weight=1)
 
         self.image_label = ttk.Frame(root)
         self.image_label.grid(row=0, column=0, columnspan=4)
@@ -48,6 +49,9 @@ class ImageViewerApp:
 
         gimme_data_btn = tk.Button(root, text="Classify", command=self.classify_dialog)
         gimme_data_btn.grid(row=2, column=4, pady=5)
+
+        gimme_data_btn = tk.Button(root, text="Plot data", command=self.plot_dialog)
+        gimme_data_btn.grid(row=2, column=5, pady=5)
 
         self.photo = None
 
@@ -157,7 +161,7 @@ class ImageViewerApp:
         descriptors = []
 
         for i in range(6):
-            labels.append(tk.Label(dialog, text="ASC-H:"))
+            labels.append(tk.Label(dialog, text=""))
             labels[-1].grid(row=i+1, column=0, padx=5, pady=5)
             descriptors.append(tk.Label(dialog, text="{:.2f}".format(0)))
             descriptors[-1].grid(row=i+1, column=1, padx=5, pady=5)
@@ -174,9 +178,20 @@ class ImageViewerApp:
                 labels[i].config(text=label)
                 descriptors[i].config(text=descriptor)
 
-
         action_btn = tk.Button(dialog, text="Close", command=close)
         action_btn.grid(row=7, column=0, columnspan=1, pady=10)
 
         action_btn = tk.Button(dialog, text="Classify", command=classify)
         action_btn.grid(row=7, column=1, columnspan=1, pady=10)
+    
+    def plot_dialog(self):
+        dialog = tk.Toplevel()
+
+        image_label = Zoom_Advanced(dialog, './model_data/scatter_all.png')
+        image_label.grid(row=0, column=0)
+
+        def close():
+            dialog.destroy()
+
+        action_btn = tk.Button(dialog, text="Close", command=close)
+        action_btn.grid(row=1, column=0, columnspan=1, pady=10)
