@@ -1,4 +1,4 @@
-,image,area,compactness,eccentricity,permieter,label
+,image,area,compactness,eccentricity,perimeter,label
 0,./cropped_dataset/ASC-H/10.jpg,483,2.066071278566959,0.5118442902279664,111.982754945755,ASC-H
 1,./cropped_dataset/ASC-H/10000.jpg,673,2.9075629715371334,0.7948020785346779,156.81118214130402,ASC-H
 2,./cropped_dataset/ASC-H/10001.jpg,970,1.7575508352334592,0.49715518879132675,146.3675309419632,ASC-H
