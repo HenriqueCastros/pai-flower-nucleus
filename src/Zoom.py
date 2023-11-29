@@ -26,7 +26,7 @@ class AutoScrollbar(ttk.Scrollbar):
     
 class Zoom_Advanced(ttk.Frame):
     ''' Advanced zoom of the image '''
-    def __init__(self, mainframe, img: str | np.ndarray, vbar_col=5, hbar_row=1, colspan=4):
+    def __init__(self, mainframe, img: str | np.ndarray, vbar_col=6, hbar_row=1, colspan=6):
         ''' Initialize the main Frame '''
         ttk.Frame.__init__(self, master=mainframe)
 
@@ -52,6 +52,8 @@ class Zoom_Advanced(ttk.Frame):
         self.canvas.bind('<ButtonPress-1>', self.move_from)
         self.canvas.bind('<B1-Motion>',     self.move_to)
         self.canvas.bind('<MouseWheel>', self.wheel)  # with Windows and MacOS, but not Linux
+        self.canvas.bind('<Button-5>',   self.wheel)  # only with Linux, wheel scroll down
+        self.canvas.bind('<Button-4>',   self.wheel)  # only with Linux, wheel scroll up
 
 
         if isinstance(img, str):

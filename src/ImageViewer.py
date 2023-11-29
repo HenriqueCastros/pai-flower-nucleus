@@ -31,9 +31,10 @@ class ImageViewerApp:
         self.root.grid_columnconfigure(3, weight=1)
         self.root.grid_columnconfigure(4, weight=1)
         self.root.grid_columnconfigure(5, weight=1)
+        self.root.grid_columnconfigure(6, weight=1)
 
         self.image_label = ttk.Frame(root)
-        self.image_label.grid(row=0, column=0, columnspan=4)
+        self.image_label.grid(row=0, column=0, columnspan=6)
 
         open_btn = tk.Button(root, text="Open Image", command=self.open_image)
         open_btn.grid(row=2, column=0, pady=5)
