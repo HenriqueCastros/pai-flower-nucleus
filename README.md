@@ -1,50 +1,19 @@
-# CRIC Cervix Cell Classification
+# PAI FLOWER NUCLEUS
 
-400 images from microscope slides of the uterine cervix using the conventional smear (Pap smear) and the epithelial cell abnormalities classified according to Bethesda system.
+App developed to interpret and recognize cancer cells from the Papanicolau exam.
 
-## How to Cite
+The dataset was obtained from 'Cric searchable image database as a public platform for conventional pap smear cytology data' by Mariana T. Rezende et. al.
 
-Mariana, Claudia, Alessandra.
+This implementation was developed for the Image Analysis and Processing class by Alexei Machado and Felipe  in 2023/2.
+Authors:
 
-## Data Fields
+- Henrique Castro e Silva
+- Leonardo Caetano Gomide
 
-- `image_id`
+The code is also available in the following repository: https://github.com/HenriqueCastros/pai-flower-nucleus
 
-  This is the integer that identifies the image at http://database.cric.com.br/.
-- `image_filename`
+The resnet models trained were too big and are available in the following link: https://drive.google.com/drive/folders/11L-_a8vi-YwqtSmYaFZXixMziORM_0OV
 
-  This is the name that identifies the image in the ZIP file that you have.
-- `image_doi`
+## References
 
-  This is the DOI that identifies the image.
-- `cell_id`
-
-  This is the integer that identifies the cell at http://database.cric.com.br/.
-- `bethesda_system`
-
-  Classification of the cell
-  using the Bethesda system.
-  It is on of the following:
-
-  - Negative for intraepithelial lesion
-  - ASC-US
-
-    Atypical squamous cells of undetermined significance
-  - ASC-H
-
-    Atypical squamous cells cannot exclude HSIL
-  - LSIL
-
-    Low grade squamous intraepithelial lesion
-  - HSIL
-
-    High grade squamous intraepithelial lesion
-  - SCC
-
-    Squamous cell carcinoma
-- `nucleus_x`
-
-  Integer between 1 and 1384 equal to coordinate x of the pixel that represent the cell.
-- `nucleus_y`
-
-  Integer between 1 and 1384 equal to coordinate y of the pixel that represent the cell.
+ - Cric searchable image database as a public platform for conventional pap smear cytology data - Mariana T. Rezende, Raniere Silva, Fagner de O. Bernardo, Alessandra H. G. Tobias, Paulo H. C. Oliveira, Tales M. Machado, Caio S. Costa, Fatima N. S. Medeiros, Daniela M. Ushizima, Claudia M. Carneiro and Andrea G. C. Bianchi, published in the Scientific Data - Nature in June 2021.
