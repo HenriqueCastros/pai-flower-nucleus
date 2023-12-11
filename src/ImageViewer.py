@@ -261,7 +261,7 @@ class ImageViewerApp:
                 else 'binary'
             )
 
-            if self.classification_mode == 'Mahalanobis':
+            if self.classification_mode.get() == 'Mahalanobis':
                 data, selected = classify_mahalanobis(
                     self.image_label.image, subpath=subpath
                 )
