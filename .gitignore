@@ -4,6 +4,8 @@
 /tmp
 *.zip
 /cropped_dataset
+# models
+*.keras 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
